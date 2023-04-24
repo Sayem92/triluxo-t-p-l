@@ -1,7 +1,8 @@
 import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
-import { AuthContext } from "../../provider/AuthProvider";
+import { AuthContext } from "../../../provider/AuthProvider";
 import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const ReminderForm = () => {
   const { user } = useContext(AuthContext);
@@ -11,28 +12,30 @@ const ReminderForm = () => {
     formState: { errors },
   } = useForm();
 
+  const navigate = useNavigate();
+
   const handleAddReminder = (data) => {
     const saveData = {
       ...data,
       email: user?.email,
     };
 
-    console.log(saveData);
+  
 
-     // sava information to the database----------
-     fetch(`/addReminder`, {
-        method: "POST",
-        headers: {
-            'content-type': "application/json"
-        },
-        body: JSON.stringify(saveData)
+    // sava information to the database----------
+    fetch(`/addReminder`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(saveData),
     })
-        .then(res => res.json())
-        .then(result => {
-            console.log(result);
-            toast.success(`${data.title} reminder save successful`);
-            // navigate('/myReminders');
-        })
+      .then((res) => res.json())
+      .then((result) => {
+        console.log(result);
+        toast.success(`${data.title} reminder save successful`);
+        navigate("/myReminder");
+      });
   };
 
   return (
@@ -42,7 +45,7 @@ const ReminderForm = () => {
           <form onSubmit={handleSubmit(handleAddReminder)}>
             <div className="mb-5">
               <label
-              htmlFor="title"
+                htmlFor="title"
                 className="mb-3 block text-base font-medium text-[#07074D]"
               >
                 Title

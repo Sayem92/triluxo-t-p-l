@@ -3,7 +3,8 @@ import Home from "../components/home/Home";
 import Register from "../components/form/Register";
 import Login from "../components/form/Login";
 import HowToWork from "../components/home/HowToWork";
-import ReminderForm from "../components/reminderForm/ReminderForm";
+import ReminderForm from "../components/reminder/reminderForm/ReminderForm";
+import MyReminder from "../components/reminder/myReminder/MyReminder";
 
 export const router = createBrowserRouter([
   {
@@ -26,5 +27,11 @@ export const router = createBrowserRouter([
     path: "/reminderForm",
     element: <ReminderForm></ReminderForm>,
   },
+  {
+    path: "/myReminder",
+    element: <MyReminder></MyReminder>,
+  },
+
+
 
 ]);
