@@ -11,7 +11,7 @@ const ReminderForm = () => {
     register,
     handleSubmit,
     formState: { errors },
-    isLoading
+    isLoading,
   } = useForm();
 
   const navigate = useNavigate();
@@ -22,10 +22,8 @@ const ReminderForm = () => {
       email: user?.email,
     };
 
-  
-
     // sava information to the database----------
-    fetch(`http://localhost:5000/addReminder`, {
+    fetch(`https://triluxo-t-p-l-server.vercel.app/addReminder`, {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -119,12 +117,9 @@ const ReminderForm = () => {
                 {isLoading ? <LoaderSpin /> : "Create a Reminder"}
               </button>
               <Link to="/myReminder">
-
-              <button
-                className="hover:shadow-form rounded-md btn-info  px-8 text-center text-base font-semibold text-white outline-none btn-sm"
-              >
-                My Reminders
-              </button>
+                <button className="hover:shadow-form rounded-md btn-info  px-8 text-center text-base font-semibold text-white outline-none btn-sm">
+                  My Reminders
+                </button>
               </Link>
             </div>
           </form>

@@ -17,7 +17,7 @@ const MyReminder = () => {
     queryFn: async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/myReminders/${user?.email}`
+          `https://triluxo-t-p-l-server.vercel.app/myReminders/${user?.email}`
         );
         const data = await res.json();
         return data;
@@ -31,7 +31,7 @@ const MyReminder = () => {
     const agree = window.confirm(`Are you sure delete this reminder?`);
 
     if (agree) {
-      fetch(`http://localhost:5000/reminder/${_id}`, {
+      fetch(`https://triluxo-t-p-l-server.vercel.app/reminder/${_id}`, {
         method: "DELETE",
       })
         .then((res) => res.json())
@@ -50,7 +50,7 @@ const MyReminder = () => {
       status: true,
     };
     if (agree) {
-      fetch(`http://localhost:5000/reminder/${_id}`, {
+      fetch(`https://triluxo-t-p-l-server.vercel.app/reminder/${_id}`, {
         method: "PUT",
         headers: {
           "content-type": "application/json",
