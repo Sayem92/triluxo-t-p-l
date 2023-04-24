@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../../provider/AuthProvider";
 import { userInfoSave } from "../../api/SaveUser";
+import { LoaderSpin } from "../../loading/Loader";
 
 const Login = () => {
   const {
@@ -11,6 +12,7 @@ const Login = () => {
     formState: { errors },
     handleSubmit,
     getValues,
+    isLoading,
   } = useForm();
   const { signIn, googleLogin, forgetPassword } = useContext(AuthContext);
   const [loginError, setLoginError] = useState("");
@@ -77,7 +79,7 @@ const Login = () => {
           <div className="form-control w-full max-w-x">
             <label className="label">
               {" "}
-              <span className="label-text ">Email</span>
+              <span className="label-text">Email</span>
             </label>
             <input
               type="email"
@@ -99,7 +101,7 @@ const Login = () => {
           <div className="form-control w-full max-w-xs">
             <label className="label">
               {" "}
-              <span className="label-text ">Password</span>
+              <span className="label-text">Password</span>
             </label>
             <input
               type="password"
@@ -128,11 +130,14 @@ const Login = () => {
             </label>
           </div>
 
-          <input
+          <button
             className="btn btn-accent text-white w-full"
             type="submit"
             value="Login"
-          />
+          >
+            {" "}
+            {isLoading ? <LoaderSpin /> : "Login"}
+          </button>
           <div>
             {loginError && <p className="text-red-600">{loginError}</p>}
           </div>

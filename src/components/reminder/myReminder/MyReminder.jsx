@@ -3,15 +3,22 @@ import { Link } from "react-router-dom";
 import Loading from "../../../loading/Loading";
 import { useQuery } from "@tanstack/react-query";
 import { AuthContext } from "../../../provider/AuthProvider";
+import { toast } from "react-hot-toast";
 
 const MyReminder = () => {
   const { user } = useContext(AuthContext);
 
-  const { data, isLoading } = useQuery({
+  const {
+    data = [],
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: [""],
     queryFn: async () => {
       try {
-        const res = await fetch(`myReminder/${user?.email}`);
+        const res = await fetch(
+          `http://localhost:5000/myReminders/${user?.email}`
+        );
         const data = await res.json();
         return data;
       } catch (err) {
@@ -20,7 +27,44 @@ const MyReminder = () => {
     },
   });
 
+  const handleDeletingReminder = (_id) => {
+    const agree = window.confirm(`Are you sure delete this reminder?`);
 
+    if (agree) {
+      fetch(`http://localhost:5000/reminder/${_id}`, {
+        method: "DELETE",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.deletedCount > 0) {
+            toast.success(`Reminder deleted successfully`);
+            refetch();
+          }
+        });
+    }
+  };
+
+  const handleUpdateReminder = (_id) => {
+    const agree = window.confirm(`Are you sure Update this reminder?`);
+    const reminder = {
+      status: true,
+    };
+    if (agree) {
+      fetch(`http://localhost:5000/reminder/${_id}`, {
+        method: "PUT",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(reminder),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          toast.success(`Reminder update successfully`);
+          refetch();
+        });
+    }
+  };
 
   if (isLoading) {
     return <Loading></Loading>;
@@ -41,7 +85,19 @@ const MyReminder = () => {
 
   return (
     <div className="mt-3">
-      <h2 className="text-3xl font-semibold ml-8 mb-4">My Reminders</h2>
+      <div className="flex justify-between items-center m-5 flex-wrap">
+        <h2 className="text-3xl font-semibold">My Reminders</h2>
+        <div>
+          <Link to="/reminderForm">
+            <button className="btn btn-sm btn-success text-white mr-5">
+              Add reminder
+            </button>
+          </Link>
+          <Link to="/">
+            <button className="btn btn-sm btn-info text-white">Home</button>
+          </Link>
+        </div>
+      </div>
       <div className="overflow-x-auto">
         <table className="table w-full">
           <thead>
@@ -62,7 +118,10 @@ const MyReminder = () => {
                 <td>
                   {!reminder?.status && (
                     //    modal use
-                    <button className="btn btn-sm btn-info text-white">
+                    <button
+                      onClick={() => handleUpdateReminder(reminder?._id)}
+                      className="btn btn-sm btn-info text-white"
+                    >
                       Not Complete
                     </button>
                   )}
@@ -75,7 +134,10 @@ const MyReminder = () => {
                 <td>{reminder?.date}</td>
                 <td>{reminder?.time}</td>
                 <td>
-                  <button className="btn btn-sm btn-warning text-white">
+                  <button
+                    onClick={() => handleDeletingReminder(reminder?._id)}
+                    className="btn btn-sm btn-error text-white"
+                  >
                     Delete
                   </button>
                 </td>

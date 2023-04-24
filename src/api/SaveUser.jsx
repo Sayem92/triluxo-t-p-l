@@ -6,7 +6,7 @@ export const userInfoSave = (name, email) => {
         email
     }
 
-    fetch(`/users`, {
+    fetch(`http://localhost:5000/user/:${email}`, {
         method: "PUT",
         headers: {
             'content-type': "application/json"

@@ -5,22 +5,20 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../provider/AuthProvider";
 import Loading from "../../loading/Loading";
 import { userInfoSave } from "../../api/SaveUser";
-
+import { LoaderSpin } from "../../loading/Loader";
 
 const Register = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
+    isLoading,
   } = useForm();
   const { createUser, updateUser, googleLogin, loading, setLoading } =
     useContext(AuthContext);
   const [signUpError, setSignUpError] = useState("");
-  const imageHostKey = process.env.REACT_APP_IMGBB_key;
-
 
   const navigate = useNavigate();
-
 
   // user sign up---------
   const handleSignUp = (data) => {
@@ -31,34 +29,16 @@ const Register = () => {
         setSignUpError("");
         toast.success("Successfully created!");
 
-        const image = data.image[0];
-        const formData = new FormData();
-        formData.append("image", image);
-        const url = `https://api.imgbb.com/1/upload?key=${imageHostKey}`;
-        fetch(url, {
-          method: "POST",
-          body: formData,
-        })
-          .then((res) => res.json())
-          .then((imgData) => {
-            console.log(imgData);
-            if (imgData.success) {
-              //user update---------
-              const userInfo = {
-                displayName: data.name,
-                photoURL: imgData.data.display_url,
-              };
-              updateUser(userInfo)
-                .then(() => {
-                  // save data -------------
-                  saveUser(
-                    data.name,
-                    data.email
-                  );
-                })
-                .catch((err) => console.log(err));
-            }
-          });
+        //user update---------
+        const userInfo = {
+          displayName: data.name,
+        };
+        updateUser(userInfo)
+          .then(() => {
+            // save data -------------
+            saveUser(data.name, data.email);
+          })
+          .catch((err) => console.log(err));
       })
       .catch((err) => {
         console.log(err);
@@ -71,10 +51,10 @@ const Register = () => {
   const saveUser = (name, email) => {
     const user = {
       name,
-      email
+      email,
     };
 
-    fetch(`/users`, {
+    fetch(`http://localhost:5000/user/:${email}`, {
       method: "PUT",
       headers: {
         "content-type": "application/json",
@@ -85,7 +65,7 @@ const Register = () => {
       .then((data) => {
         console.log("save user", data);
         toast.success("Save user data!");
-        navigate('/')
+        navigate("/");
         setLoading(false);
       });
   };
@@ -99,8 +79,7 @@ const Register = () => {
         // user data save --------------
         userInfoSave(user?.displayName, user?.email);
         toast.success("Google Login Successfully!");
-        navigate('/')
-        
+        navigate("/");
       })
       .catch((err) => console.log(err));
   };
@@ -182,12 +161,12 @@ const Register = () => {
             )}
           </div>
 
-
-          <input
+          <button
             className="mt-3 btn btn-accent text-white w-full max-w-xs"
             type="submit"
-            value="Sign Up"
-          />
+          >
+            {isLoading ? <LoaderSpin /> : "Sign Up"}
+          </button>
 
           <div>
             {signUpError && <p className="text-red-600">{signUpError}</p>}

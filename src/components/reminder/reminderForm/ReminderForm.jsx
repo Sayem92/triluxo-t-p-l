@@ -2,7 +2,8 @@ import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../../../provider/AuthProvider";
 import { toast } from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { LoaderSpin } from "../../../loading/Loader";
 
 const ReminderForm = () => {
   const { user } = useContext(AuthContext);
@@ -10,6 +11,7 @@ const ReminderForm = () => {
     register,
     handleSubmit,
     formState: { errors },
+    isLoading
   } = useForm();
 
   const navigate = useNavigate();
@@ -23,7 +25,7 @@ const ReminderForm = () => {
   
 
     // sava information to the database----------
-    fetch(`/addReminder`, {
+    fetch(`http://localhost:5000/addReminder`, {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -109,13 +111,21 @@ const ReminderForm = () => {
               </div>
             </div>
 
-            <div>
+            <div className="flex justify-between items-center ">
               <button
                 type="submit"
-                className="hover:shadow-form rounded-md bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none"
+                className="hover:shadow-form rounded-md btn-success py-3 px-8 text-center text-base font-semibold text-white outline-none"
               >
-                Submit
+                {isLoading ? <LoaderSpin /> : "Create a Reminder"}
               </button>
+              <Link to="/myReminder">
+
+              <button
+                className="hover:shadow-form rounded-md btn-info  px-8 text-center text-base font-semibold text-white outline-none btn-sm"
+              >
+                My Reminders
+              </button>
+              </Link>
             </div>
           </form>
         </div>
